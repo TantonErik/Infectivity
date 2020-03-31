@@ -1,0 +1,120 @@
+#-------------------------------------------------------------------------------
+# Name:        module1
+# Purpose:
+#
+# Author:      Erik Tanton
+#
+# Created:     28/03/2020
+# Copyright:   (c) Erik Tanton 2020
+# Licence:     <your licence>
+#-------------------------------------------------------------------------------
+#Dad's virus infectivity game
+#basic idea, you have a screen of black balls. You can only see them if you shine a flashlight on it. (TESTING) 1 of the balls are by default red (Infected and dying) after a select amount of time that ball will dissapear(die). Every
+#ball that it touches infects it and it turns yellow. If you spend money you can buy a "bomb" to cure all of the yellow balls. You cannot cure red balls. Or you can spend money to have more flashlights looking. The goal is to cure
+#every ball.
+#it is going to be programmed in python, and in a set resolution (to help make things simple)
+#there is going to have to be a function for infectivity, movement, and the ability to bounce. every ball will hae a class?
+
+
+import pygame
+import sys
+import time
+import random
+
+pygame.init()
+WIDTH = (1440)
+HEIGHT = (1080)
+BLACK = 0
+WHITE = 0
+#screen = pygame.display.set_mode((WIDTH,HEIGHT))
+infected = 2
+cure_percentage = 0
+cure_start = False
+money = 0
+multiplier = 1
+cure_multiplier = 0
+days = 0
+dead = 0
+total_pop = 10000
+consecutive_days = 1
+bombmultiplier = 1
+doublemultiplier = 1
+curemultiplier = 1
+
+
+
+#def movement():
+
+
+#def infection():
+
+#def flashlight():
+
+#def bomb():
+
+
+
+while infected <= 1000 and dead <= total_pop/10:
+    time.sleep(5)
+    bomb_price = 10*bombmultiplier
+    double_price = 50*doublemultiplier
+    cure_price = 1000*curemultiplier
+    print("DAY " + str(consecutive_days))
+    consecutive_days += 1
+    chance = random.randint(0,5)
+    if chance == 1 or days == 3:
+        days = 0
+        infected += infected/0.5
+        print("You now have " + str(infected) + " infected people." )
+        if infected <= 49:
+            money += round(infected*multiplier)
+            print("You have made $" + str(round((infected/2)*multiplier)) + " from the government to help deal with this epidemic. You now have $"+  str(round(money)))
+        if infected >= 50:
+            money += infected*2*multiplier
+            print("You have made $" + str(round(infected*4*multiplier)) + " from the government to help deal with this epidemic. You now have $" + str(round(money)))
+    if money >= bomb_price:
+        print("1. Buy a bomb to reduce the infected by 50%. Costs " + str(bomb_price))
+    if money >=double_price:
+        print("2. Double the money you get from the government per infected. Costs " + str(double_price))
+    if money >= cure_price:
+        print("3. Start working on a cure, it goes up by 5% every day. Costs " + str(cure_price))
+    if money >= bomb_price:
+        print("You have $ " + str(round(money)))
+        print("You have " + str(round(infected)) + " infected people, " + str(round(total_pop)) + " total people, and " + str(round(dead)) + " dead people" )
+        decision = input("What would you like to do with your money?")
+        if decision == "1":
+            money -= bomb_price
+            print("You now have $ " + str(round(money)))
+            infected = round(infected/2)
+            dead += infected
+            bombmultiplier += 1
+            if total_pop + dead != 10000:
+                total_pop = 10000
+                total_pop -= dead
+            print("There are now " + str(round(infected)) + " infected people.")
+        if decision == "2":
+            money -= double_price
+            doublemultiplier = doublemultiplier*2
+            print("You now have $" + str(round(money)))
+            print("You are now earning double money from the government.")
+            multiplier = multiplier*2
+        if decision == "3":
+            curemultiplier = curemultiplier*3
+            money -= cure_price
+            print("You now have $" + str(round(money)))
+            cure_start = True
+            cure_multiplier += 1
+    if chance != 1:
+        days += 1
+    if cure_start == True:
+        cure_percentage += 5*cure_multiplier
+        if cure_percentage < 100:
+            print("The cure is " + str(cure_percentage) + "% complete")
+        if cure_percentage >= 100:
+            print("The cure is 100% complete")
+            sys.exit("YOU WON IN " + str(consecutive_days))
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            print(event)
+            pygame.display.quit()
+print("You have lost, try again?")
